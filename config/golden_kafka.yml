@@ -1,0 +1,5 @@
+events:
+  com.example.topic:
+    dataschema: "v1"
+    source: "earth"
+    type: "new"
