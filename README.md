@@ -34,7 +34,7 @@ events:
 
 You can add any values you want to be used as default values. These can be overridden once the event is created.
 
-Now create an push an event into your new topic:
+Now create and push an event into your new topic:
 
 ```ruby
 # Init event using template
