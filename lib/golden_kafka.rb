@@ -28,6 +28,12 @@ module GoldenKafka
       DeliveryBoy.deliver_async( event.to_json, topic: event.topic, **args, &block )
     end
 
+    def deliver_async! event, **args, &block
+      _validate_event! event
+
+      DeliveryBoy.deliver_async!( event.to_json, topic: event.topic, **args, &block )
+    end
+
     def deliver_messages
       DeliveryBoy.deliver_messages
     end
@@ -36,6 +42,12 @@ module GoldenKafka
       _validate_event! event
 
       DeliveryBoy.produce( event.to_json, topic: event.topic, **args, &block )
+    end
+
+    def produce! event, **args, &block
+      _validate_event! event
+
+      DeliveryBoy.produce!( event.to_json, topic: event.topic, **args, &block )
     end
 
     private
