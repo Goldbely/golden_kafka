@@ -39,17 +39,15 @@ Now create and push an event into your new topic:
 ```ruby
 # Init event using template
 
-# Important note:
-# Starting on v2.0.0, Event requires an extra parameter: `serializer`. The serializer is used to serialize the message before pushing them to Kafka.
-
-event = GoldenKafka::Event.new "com.example.topic", MySerializer
+event = GoldenKafka::Event.new "com.example.topic"
 event.data = { key: "value" }
-event.source = "my_app"
 event.time = Time.now
 event.type = "created"
 
 # Push event into Kafka
-GoldenKafka.deliver event
+# Important note:
+# Starting on v1.0.0, producing and delivering messages requires a serializer class.
+GoldenKafka.deliver event, serializer: MySerializer
 ```
 
 ## Serializers
