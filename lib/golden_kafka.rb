@@ -17,21 +17,27 @@ module GoldenKafka
     end
 
     def deliver event, **args, &block
+      serializer = enforce_serializer! args
+
       _validate_event! event
 
-      DeliveryBoy.deliver( event.to_json, topic: event.topic, **args, &block )
+      DeliveryBoy.deliver( event.to_json( serializer ), topic: event.topic, **args, &block )
     end
 
     def deliver_async event, **args, &block
+      serializer = enforce_serializer! args
+
       _validate_event! event
 
-      DeliveryBoy.deliver_async( event.to_json, topic: event.topic, **args, &block )
+      DeliveryBoy.deliver_async( event.to_json( serializer ), topic: event.topic, **args, &block )
     end
 
     def deliver_async! event, **args, &block
+      serializer = enforce_serializer! args
+
       _validate_event! event
 
-      DeliveryBoy.deliver_async!( event.to_json, topic: event.topic, **args, &block )
+      DeliveryBoy.deliver_async!( event.to_json( serializer ), topic: event.topic, **args, &block )
     end
 
     def deliver_messages
@@ -39,18 +45,26 @@ module GoldenKafka
     end
 
     def produce event, **args, &block
+      serializer = enforce_serializer! args
+
       _validate_event! event
 
-      DeliveryBoy.produce( event.to_json, topic: event.topic, **args, &block )
+      DeliveryBoy.produce( event.to_json( serializer ), topic: event.topic, **args, &block )
     end
 
     def produce! event, **args, &block
+      serializer = enforce_serializer! args
+
       _validate_event! event
 
-      DeliveryBoy.produce!( event.to_json, topic: event.topic, **args, &block )
+      DeliveryBoy.produce!( event.to_json( serializer ), topic: event.topic, **args, &block )
     end
 
     private
+
+    def enforce_serializer! args
+      args.delete( :serializer ) || raise( ArgumentError, "argument 'serializer' must be present" )
+    end
 
     def _validate_event! event
       # we could also check event is_a Event, but this seems enough for now

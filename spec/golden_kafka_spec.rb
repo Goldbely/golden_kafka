@@ -4,6 +4,8 @@
 # - avoid some repetition with methods delegated to Delivery Boy
 # - factories/fixtures for events? (valid, invalid, nonexistent topic)
 RSpec.describe GoldenKafka do
+  let( :serializer ) { GoldenKafka::Testing::DummySerializer }
+
   describe "#configure_delivery_boy" do
     it "allows configuring DeliveryBoy" do
       DeliveryBoy.config.log_level = :warn
@@ -18,10 +20,10 @@ RSpec.describe GoldenKafka do
 
   describe "#deliver" do
     context "when event is valid" do
-      let( :event ) { GoldenKafka::Event.new "com.example.topic", GoldenKafka::Testing::DummyMessage, source: "a_source" }
+      let( :event ) { GoldenKafka::Event.new "com.example.topic", source: "a_source" }
 
       it "queues it" do
-        described_class.deliver event, partition_key: "a_key"
+        described_class.deliver event, partition_key: "a_key", serializer: serializer
 
         messages = DeliveryBoy.testing.messages_for "com.example.topic"
 
@@ -30,13 +32,21 @@ RSpec.describe GoldenKafka do
           value: event.to_json,
         )
       end
+
+      context "when serializer is not set" do
+        it "raises an exception" do
+          expect do
+            described_class.deliver event, partition_key: "a_key"
+          end.to raise_error ArgumentError, "argument 'serializer' must be present"
+        end
+      end
     end
 
     context "when event is not valid" do
-      let( :event ) { GoldenKafka::Event.new "com.example.topic", GoldenKafka::Testing::DummyMessage, source: nil }
+      let( :event ) { GoldenKafka::Event.new "com.example.topic", source: nil }
 
       it "does not queue it" do
-        described_class.deliver event rescue GoldenKafka::Error
+        described_class.deliver event, serializer: serializer rescue GoldenKafka::Error
 
         messages = DeliveryBoy.testing.messages_for "com.example.topic"
         expect( messages.count ).to eq 0
@@ -44,7 +54,7 @@ RSpec.describe GoldenKafka do
 
       it "raises an expection" do
         expect do
-          described_class.deliver event
+          described_class.deliver event, serializer: serializer
         end.to raise_error(
           GoldenKafka::FormatException,
           "event payload must comply with GB guidelines",
@@ -53,11 +63,11 @@ RSpec.describe GoldenKafka do
     end
 
     context "when event does not exist" do
-      let( :event ) { GoldenKafka::Event.new "a_topic", GoldenKafka::Testing::DummyMessage }
+      let( :event ) { GoldenKafka::Event.new "a_topic" }
 
       it "raises an expection" do
         expect do
-          described_class.deliver event
+          described_class.deliver event, serializer: serializer
         end.to raise_error(
           GoldenKafka::TemplateNotFoundError,
           "topic a_topic is not set up",
@@ -68,10 +78,10 @@ RSpec.describe GoldenKafka do
 
   describe "#deliver_async" do
     context "when event is valid" do
-      let( :event ) { GoldenKafka::Event.new "com.example.topic", GoldenKafka::Testing::DummyMessage, source: "a_source" }
+      let( :event ) { GoldenKafka::Event.new "com.example.topic", source: "a_source" }
 
       it "queues it" do
-        described_class.deliver_async event, partition_key: "a_key"
+        described_class.deliver_async event, partition_key: "a_key", serializer: serializer
 
         messages = DeliveryBoy.testing.messages_for "com.example.topic"
 
@@ -83,10 +93,10 @@ RSpec.describe GoldenKafka do
     end
 
     context "when event is not valid" do
-      let( :event ) { GoldenKafka::Event.new "com.example.topic", GoldenKafka::Testing::DummyMessage, source: nil }
+      let( :event ) { GoldenKafka::Event.new "com.example.topic", source: nil }
 
       it "does not queue it" do
-        described_class.deliver_async event rescue GoldenKafka::Error
+        described_class.deliver_async event, serializer: serializer rescue GoldenKafka::Error
 
         messages = DeliveryBoy.testing.messages_for "com.example.topic"
         expect( messages.count ).to eq 0
@@ -94,7 +104,7 @@ RSpec.describe GoldenKafka do
 
       it "raises an expection" do
         expect do
-          described_class.deliver_async event
+          described_class.deliver_async event, serializer: serializer
         end.to raise_error(
           GoldenKafka::FormatException,
           "event payload must comply with GB guidelines",
@@ -103,11 +113,11 @@ RSpec.describe GoldenKafka do
     end
 
     context "when event does not exist" do
-      let( :event ) { GoldenKafka::Event.new "a_topic", GoldenKafka::Testing::DummyMessage }
+      let( :event ) { GoldenKafka::Event.new "a_topic" }
 
       it "raises an expection" do
         expect do
-          described_class.deliver_async event
+          described_class.deliver_async event, serializer: serializer
         end.to raise_error(
           GoldenKafka::TemplateNotFoundError,
           "topic a_topic is not set up",
@@ -118,10 +128,10 @@ RSpec.describe GoldenKafka do
 
   describe "#deliver_async!" do
     context "when event is valid" do
-      let( :event ) { GoldenKafka::Event.new "com.example.topic", GoldenKafka::Testing::DummyMessage, source: "a_source" }
+      let( :event ) { GoldenKafka::Event.new "com.example.topic", source: "a_source" }
 
       it "queues it" do
-        described_class.deliver_async! event, partition_key: "a_key"
+        described_class.deliver_async! event, partition_key: "a_key", serializer: serializer
 
         messages = DeliveryBoy.testing.messages_for "com.example.topic"
 
@@ -133,10 +143,10 @@ RSpec.describe GoldenKafka do
     end
 
     context "when event is not valid" do
-      let( :event ) { GoldenKafka::Event.new "com.example.topic", GoldenKafka::Testing::DummyMessage, source: nil }
+      let( :event ) { GoldenKafka::Event.new "com.example.topic", source: nil }
 
       it "does not queue it" do
-        described_class.deliver_async! event rescue GoldenKafka::Error
+        described_class.deliver_async! event, serializer: serializer rescue GoldenKafka::Error
 
         messages = DeliveryBoy.testing.messages_for "com.example.topic"
         expect( messages.count ).to eq 0
@@ -144,7 +154,7 @@ RSpec.describe GoldenKafka do
 
       it "raises an expection" do
         expect do
-          described_class.deliver_async! event
+          described_class.deliver_async! event, serializer: serializer
         end.to raise_error(
           GoldenKafka::FormatException,
           "event payload must comply with GB guidelines",
@@ -153,11 +163,11 @@ RSpec.describe GoldenKafka do
     end
 
     context "when event does not exist" do
-      let( :event ) { GoldenKafka::Event.new "a_topic", GoldenKafka::Testing::DummyMessage }
+      let( :event ) { GoldenKafka::Event.new "a_topic" }
 
       it "raises an expection" do
         expect do
-          described_class.deliver_async! event
+          described_class.deliver_async! event, serializer: serializer
         end.to raise_error(
           GoldenKafka::TemplateNotFoundError,
           "topic a_topic is not set up",
@@ -168,10 +178,10 @@ RSpec.describe GoldenKafka do
 
   describe "#produce and #deliver_messages" do
     context "when event is valid" do
-      let( :event ) { GoldenKafka::Event.new "com.example.topic", GoldenKafka::Testing::DummyMessage, source: "a_source" }
+      let( :event ) { GoldenKafka::Event.new "com.example.topic", source: "a_source" }
 
       it "queues it" do
-        described_class.produce event, partition_key: "a_key"
+        described_class.produce event, partition_key: "a_key", serializer: serializer
         described_class.deliver_messages
 
         messages = DeliveryBoy.testing.messages_for "com.example.topic"
@@ -184,10 +194,10 @@ RSpec.describe GoldenKafka do
     end
 
     context "when event is not valid" do
-      let( :event ) { GoldenKafka::Event.new "com.example.topic", GoldenKafka::Testing::DummyMessage, source: nil }
+      let( :event ) { GoldenKafka::Event.new "com.example.topic", source: nil }
 
       it "does not queue it" do
-        described_class.produce event rescue GoldenKafka::Error
+        described_class.produce event, serializer: serializer rescue GoldenKafka::Error
         described_class.deliver_messages
 
         messages = DeliveryBoy.testing.messages_for "com.example.topic"
@@ -196,7 +206,7 @@ RSpec.describe GoldenKafka do
 
       it "raises an expection" do
         expect do
-          described_class.produce event
+          described_class.produce event, serializer: serializer
         end.to raise_error(
           GoldenKafka::FormatException,
           "event payload must comply with GB guidelines",
@@ -205,11 +215,11 @@ RSpec.describe GoldenKafka do
     end
 
     context "when event does not exist" do
-      let( :event ) { GoldenKafka::Event.new "a_topic", GoldenKafka::Testing::DummyMessage }
+      let( :event ) { GoldenKafka::Event.new "a_topic" }
 
       it "raises an expection" do
         expect do
-          described_class.produce event
+          described_class.produce event, serializer: serializer
         end.to raise_error(
           GoldenKafka::TemplateNotFoundError,
           "topic a_topic is not set up",
@@ -220,10 +230,10 @@ RSpec.describe GoldenKafka do
 
   describe "#produce! and #deliver_messages" do
     context "when event is valid" do
-      let( :event ) { GoldenKafka::Event.new "com.example.topic", GoldenKafka::Testing::DummyMessage, source: "a_source" }
+      let( :event ) { GoldenKafka::Event.new "com.example.topic", source: "a_source" }
 
       it "queues it" do
-        described_class.produce! event, partition_key: "a_key"
+        described_class.produce! event, partition_key: "a_key", serializer: serializer
         described_class.deliver_messages
 
         messages = DeliveryBoy.testing.messages_for "com.example.topic"
@@ -236,10 +246,10 @@ RSpec.describe GoldenKafka do
     end
 
     context "when event is not valid" do
-      let( :event ) { GoldenKafka::Event.new "com.example.topic", GoldenKafka::Testing::DummyMessage, source: nil }
+      let( :event ) { GoldenKafka::Event.new "com.example.topic", source: nil }
 
       it "does not queue it" do
-        described_class.produce! event rescue GoldenKafka::Error
+        described_class.produce! event, serializer: serializer rescue GoldenKafka::Error
         described_class.deliver_messages
 
         messages = DeliveryBoy.testing.messages_for "com.example.topic"
@@ -248,7 +258,7 @@ RSpec.describe GoldenKafka do
 
       it "raises an expection" do
         expect do
-          described_class.produce! event
+          described_class.produce! event, serializer: serializer
         end.to raise_error(
           GoldenKafka::FormatException,
           "event payload must comply with GB guidelines",
@@ -257,11 +267,11 @@ RSpec.describe GoldenKafka do
     end
 
     context "when event does not exist" do
-      let( :event ) { GoldenKafka::Event.new "a_topic", GoldenKafka::Testing::DummyMessage }
+      let( :event ) { GoldenKafka::Event.new "a_topic" }
 
       it "raises an expection" do
         expect do
-          described_class.produce! event
+          described_class.produce! event, serializer: serializer
         end.to raise_error(
           GoldenKafka::TemplateNotFoundError,
           "topic a_topic is not set up",

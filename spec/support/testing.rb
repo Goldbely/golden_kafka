@@ -2,7 +2,7 @@
 
 module GoldenKafka
   module Testing
-    class DummyMessage
+    class DummySerializer
       def initialize attrs
         @attrs = attrs
       end

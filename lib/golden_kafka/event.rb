@@ -16,11 +16,8 @@ module GoldenKafka
       :type,
       presence: true
 
-    # TODO: Until we can work on code-generators,
-    # we receive both the serializer and the topic name
-    def initialize topic, serializer, attrs = {}
+    def initialize topic, attrs = {}
       @topic = topic
-      @serializer = serializer
 
       # find template and use it as default values
       super _template.merge( attrs )
@@ -41,9 +38,13 @@ module GoldenKafka
       }
     end
 
-    # Delegate method to provided class
-    def to_json _options = nil
-      @serializer.new( as_json ).to_json
+    # Delegate method to serializer if present
+    def to_json serializer_klass = nil
+      if serializer_klass
+        serializer_klass.new( as_json ).to_json
+      else
+        JSON.dump as_json
+      end
     end
 
     private
