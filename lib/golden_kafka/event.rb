@@ -16,8 +16,11 @@ module GoldenKafka
       :type,
       presence: true
 
-    def initialize topic, attrs = {}
+    # TODO: Until we can work on code-generators,
+    # we receive both the class and the topic name
+    def initialize topic, msg_klass, attrs = {}
       @topic = topic
+      @msg_klass = msg_klass
 
       # find template and use it as default values
       super _template.merge( attrs )
@@ -38,8 +41,9 @@ module GoldenKafka
       }
     end
 
-    def to_json
-      JSON.dump as_json
+    # Delegate method to provided class
+    def to_json _options = nil
+      @msg_klass.new( as_json ).to_json
     end
 
     private

@@ -18,7 +18,7 @@ RSpec.describe GoldenKafka do
 
   describe "#deliver" do
     context "when event is valid" do
-      let( :event ) { GoldenKafka::Event.new "com.example.topic", source: "a_source" }
+      let( :event ) { GoldenKafka::Event.new "com.example.topic", GoldenKafka::Testing::DummyMessage, source: "a_source" }
 
       it "queues it" do
         described_class.deliver event, partition_key: "a_key"
@@ -33,7 +33,7 @@ RSpec.describe GoldenKafka do
     end
 
     context "when event is not valid" do
-      let( :event ) { GoldenKafka::Event.new "com.example.topic", source: nil }
+      let( :event ) { GoldenKafka::Event.new "com.example.topic", GoldenKafka::Testing::DummyMessage, source: nil }
 
       it "does not queue it" do
         described_class.deliver event rescue GoldenKafka::Error
@@ -53,7 +53,7 @@ RSpec.describe GoldenKafka do
     end
 
     context "when event does not exist" do
-      let( :event ) { GoldenKafka::Event.new "a_topic" }
+      let( :event ) { GoldenKafka::Event.new "a_topic", GoldenKafka::Testing::DummyMessage }
 
       it "raises an expection" do
         expect do
@@ -68,7 +68,7 @@ RSpec.describe GoldenKafka do
 
   describe "#deliver_async" do
     context "when event is valid" do
-      let( :event ) { GoldenKafka::Event.new "com.example.topic", source: "a_source" }
+      let( :event ) { GoldenKafka::Event.new "com.example.topic", GoldenKafka::Testing::DummyMessage, source: "a_source" }
 
       it "queues it" do
         described_class.deliver_async event, partition_key: "a_key"
@@ -83,7 +83,7 @@ RSpec.describe GoldenKafka do
     end
 
     context "when event is not valid" do
-      let( :event ) { GoldenKafka::Event.new "com.example.topic", source: nil }
+      let( :event ) { GoldenKafka::Event.new "com.example.topic", GoldenKafka::Testing::DummyMessage, source: nil }
 
       it "does not queue it" do
         described_class.deliver_async event rescue GoldenKafka::Error
@@ -103,7 +103,7 @@ RSpec.describe GoldenKafka do
     end
 
     context "when event does not exist" do
-      let( :event ) { GoldenKafka::Event.new "a_topic" }
+      let( :event ) { GoldenKafka::Event.new "a_topic", GoldenKafka::Testing::DummyMessage }
 
       it "raises an expection" do
         expect do
@@ -118,7 +118,7 @@ RSpec.describe GoldenKafka do
 
   describe "#deliver_async!" do
     context "when event is valid" do
-      let( :event ) { GoldenKafka::Event.new "com.example.topic", source: "a_source" }
+      let( :event ) { GoldenKafka::Event.new "com.example.topic", GoldenKafka::Testing::DummyMessage, source: "a_source" }
 
       it "queues it" do
         described_class.deliver_async! event, partition_key: "a_key"
@@ -133,7 +133,7 @@ RSpec.describe GoldenKafka do
     end
 
     context "when event is not valid" do
-      let( :event ) { GoldenKafka::Event.new "com.example.topic", source: nil }
+      let( :event ) { GoldenKafka::Event.new "com.example.topic", GoldenKafka::Testing::DummyMessage, source: nil }
 
       it "does not queue it" do
         described_class.deliver_async! event rescue GoldenKafka::Error
@@ -153,7 +153,7 @@ RSpec.describe GoldenKafka do
     end
 
     context "when event does not exist" do
-      let( :event ) { GoldenKafka::Event.new "a_topic" }
+      let( :event ) { GoldenKafka::Event.new "a_topic", GoldenKafka::Testing::DummyMessage }
 
       it "raises an expection" do
         expect do
@@ -168,7 +168,7 @@ RSpec.describe GoldenKafka do
 
   describe "#produce and #deliver_messages" do
     context "when event is valid" do
-      let( :event ) { GoldenKafka::Event.new "com.example.topic", source: "a_source" }
+      let( :event ) { GoldenKafka::Event.new "com.example.topic", GoldenKafka::Testing::DummyMessage, source: "a_source" }
 
       it "queues it" do
         described_class.produce event, partition_key: "a_key"
@@ -184,7 +184,7 @@ RSpec.describe GoldenKafka do
     end
 
     context "when event is not valid" do
-      let( :event ) { GoldenKafka::Event.new "com.example.topic", source: nil }
+      let( :event ) { GoldenKafka::Event.new "com.example.topic", GoldenKafka::Testing::DummyMessage, source: nil }
 
       it "does not queue it" do
         described_class.produce event rescue GoldenKafka::Error
@@ -205,7 +205,7 @@ RSpec.describe GoldenKafka do
     end
 
     context "when event does not exist" do
-      let( :event ) { GoldenKafka::Event.new "a_topic" }
+      let( :event ) { GoldenKafka::Event.new "a_topic", GoldenKafka::Testing::DummyMessage }
 
       it "raises an expection" do
         expect do
@@ -220,7 +220,7 @@ RSpec.describe GoldenKafka do
 
   describe "#produce! and #deliver_messages" do
     context "when event is valid" do
-      let( :event ) { GoldenKafka::Event.new "com.example.topic", source: "a_source" }
+      let( :event ) { GoldenKafka::Event.new "com.example.topic", GoldenKafka::Testing::DummyMessage, source: "a_source" }
 
       it "queues it" do
         described_class.produce! event, partition_key: "a_key"
@@ -236,7 +236,7 @@ RSpec.describe GoldenKafka do
     end
 
     context "when event is not valid" do
-      let( :event ) { GoldenKafka::Event.new "com.example.topic", source: nil }
+      let( :event ) { GoldenKafka::Event.new "com.example.topic", GoldenKafka::Testing::DummyMessage, source: nil }
 
       it "does not queue it" do
         described_class.produce! event rescue GoldenKafka::Error
@@ -257,7 +257,7 @@ RSpec.describe GoldenKafka do
     end
 
     context "when event does not exist" do
-      let( :event ) { GoldenKafka::Event.new "a_topic" }
+      let( :event ) { GoldenKafka::Event.new "a_topic", GoldenKafka::Testing::DummyMessage }
 
       it "raises an expection" do
         expect do

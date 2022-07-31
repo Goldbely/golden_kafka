@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe GoldenKafka::Event do
-  subject( :event ) { described_class.new "com.example.topic" }
+  subject( :event ) { described_class.new "com.example.topic", GoldenKafka::Testing::DummyMessage }
 
   describe "initialization" do
     it "assignes a random id" do
@@ -40,7 +40,7 @@ RSpec.describe GoldenKafka::Event do
 
     it "validates that the topic is set up in the config file" do
       expect do
-        described_class.new "non.existent.topic"
+        described_class.new "non.existent.topic", GoldenKafka::Testing::DummyMessage
       end.to raise_error(
         GoldenKafka::TemplateNotFoundError,
         "topic non.existent.topic is not set up",
