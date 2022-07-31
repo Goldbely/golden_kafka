@@ -59,7 +59,7 @@ class MySerializer
   end
 
   def to_json( opts = nil )
-    # return json representation of attrs
+    # return json representation of event_attributes
   end
 end
 ```
