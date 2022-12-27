@@ -1,0 +1,16 @@
+version: 2
+updates:
+  - package-ecosystem: 'bundler'
+    commit-message:
+      prefix: 'chore(bundle): '
+    directory: '/'
+    labels:
+      - 'dependencies'
+    open-pull-requests-limit: 10
+    pull-request-branch-name:
+      separator: '_'
+    reviewers:
+      - 'Goldbely/tech-leads'
+    schedule:
+      day: 'sunday'
+      interval: 'weekly'
