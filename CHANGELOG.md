@@ -1,3 +1,8 @@
+## Unreleased
+- Added CircleCI config file.
+- Added dependabot.yml.
+- Bumped activemodel from 7.0.3.1 to 7.0.4
+
 ## 1.0.0 (Jul 31, 2022)
 [Full Changelog](https://github.com/Goldbely/golden_kafka/compare/v0.2.0...v1.0.0)
 
