@@ -1,5 +1,7 @@
 # GoldenKafka
 
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/Goldbely/golden_kafka/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/Goldbely/golden_kafka/tree/main)
+
 This is just a wrapper around [DeliveryBoy](https://github.com/zendesk/delivery_boy) that ensures any events pushed into Kafka follow Goldbelly's guidelines.
 
 **Note:** ENV vars should still be prefixed using `DELIVERY_BOY_`.
