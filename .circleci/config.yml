@@ -1,0 +1,13 @@
+version: '2.1'
+
+orbs:
+  ruby: circleci/ruby@2.0.0
+
+jobs:
+  build:
+    docker:
+      - image: cimg/ruby:2.7.5
+    steps:
+      - checkout
+      - ruby/install-deps
+      - ruby/rspec-test
