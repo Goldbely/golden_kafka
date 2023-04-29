@@ -11,16 +11,8 @@ This is just a wrapper around [DeliveryBoy](https://github.com/zendesk/delivery_
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'golden_kafka'
+# TODO
 ```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install golden_kafka
 
 ## Usage
 
