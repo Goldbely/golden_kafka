@@ -39,6 +39,6 @@ workflows:
           context: org-global
           filters:
             branches:
-              only: github_packages
+              only: main
           requires:
             - build
