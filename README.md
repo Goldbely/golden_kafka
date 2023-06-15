@@ -11,7 +11,15 @@ This is just a wrapper around [DeliveryBoy](https://github.com/zendesk/delivery_
 Add this line to your application's Gemfile:
 
 ```ruby
-# TODO
+source "https://rubygems.pkg.github.com/goldbely" do
+  gem "golden_kafka"
+end
+```
+
+Note: make sure you properly [authenticate with Github](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-rubygems-registry#authenticating-with-a-personal-access-token). Or just set:
+
+```
+export BUNDLE_RUBYGEMS__PKG__GITHUB__COM=<GH access token>
 ```
 
 ## Usage
