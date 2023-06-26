@@ -24,7 +24,7 @@ jobs:
             mkdir -p $HOME/.gem
             touch $HOME/.gem/credentials
             chmod 0600 $HOME/.gem/credentials
-            printf -- "---\n:github: Bearer ${GH_PACKAGES_PUBLISH}\n" > $HOME/.gem/credentials
+            printf -- "---\n:github: Bearer ${GH_PACKAGES_WRITE}\n" > $HOME/.gem/credentials
             gem build *.gemspec
             gem push --KEY github --host https://rubygems.pkg.github.com/goldbely *.gem
 
