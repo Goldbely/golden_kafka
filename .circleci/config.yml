@@ -38,7 +38,7 @@ workflows:
       - publish:
           context: org-global
           filters:
-            branches:
-              only: main
+            tags:
+              only: /^v.*/
           requires:
             - build
