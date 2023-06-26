@@ -1,4 +1,4 @@
-version: '2.1'
+version: 2.1
 
 orbs:
   ruby: circleci/ruby@2.0.0
@@ -11,3 +11,39 @@ jobs:
       - checkout
       - ruby/install-deps
       - ruby/rspec-test
+
+  publish:
+    docker:
+      - image: cimg/ruby:2.7.5
+    steps:
+      - checkout
+      - ruby/install-deps
+      - run:
+          name: Publish to Github Packages Registry
+          command: |
+            mkdir -p $HOME/.gem
+            touch $HOME/.gem/credentials
+            chmod 0600 $HOME/.gem/credentials
+            printf -- "---\n:github: Bearer ${GH_PACKAGES_WRITE}\n" > $HOME/.gem/credentials
+            gem build *.gemspec
+            gem push --KEY github --host https://rubygems.pkg.github.com/goldbely *.gem
+
+workflows:
+  version: 2
+  build_test_publish:
+    jobs:
+      - build:
+          context:
+            - org-global
+          filters: # required since `publish` has tag filters AND requires `build`
+            tags:
+              only: /.*/
+      - publish:
+          context: org-global
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+          requires:
+            - build

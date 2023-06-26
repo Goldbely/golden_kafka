@@ -11,7 +11,15 @@ This is just a wrapper around [DeliveryBoy](https://github.com/zendesk/delivery_
 Add this line to your application's Gemfile:
 
 ```ruby
-# TODO
+source "https://rubygems.pkg.github.com/goldbely" do
+  gem "golden_kafka"
+end
+```
+
+Note: make sure you properly [authenticate with Github](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-rubygems-registry#authenticating-with-a-personal-access-token). Or just set:
+
+```
+export BUNDLE_RUBYGEMS__PKG__GITHUB__COM=<GH access token>
 ```
 
 ## Usage
@@ -64,13 +72,20 @@ After checking out the repo, run `bin/setup` to install dependencies. Then, run 
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, create a new tag, and push it to Github.
 
+## Release
+**Note:** this package is currently being hosted privately in Github Packages. Make sure you have admin or maintainer priviledges on this repository in order to release a new version.
+### Steps
+1. Update `lib/golden_kafka/version.rb` to the desired version.
+2. Run:
+    ```bash
+    $ bundle exec rake release:source_control_push
+    ```
+
+This will push a new tag to Github. Our CI pipeline will then build and release the new version of the package to GH Packages.
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/goldbely/golden_kafka. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
-
-## License
-
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
 
 ## Code of Conduct
 
