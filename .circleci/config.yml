@@ -38,6 +38,8 @@ workflows:
       - publish:
           context: org-global
           filters:
+            branches:
+              ignore: /.*/
             tags:
               only: /^v.*/
           requires:
