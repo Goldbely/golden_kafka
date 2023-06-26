@@ -35,6 +35,9 @@ workflows:
       - build:
           context:
             - org-global
+          filters: # required since `publish` has tag filters AND requires `build`
+            tags:
+              only: /.*/
       - publish:
           context: org-global
           filters:
