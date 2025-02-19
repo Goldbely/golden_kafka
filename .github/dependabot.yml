@@ -1,6 +1,13 @@
 version: 2
+registries:
+  ruby-github:
+    type: rubygems-server
+    url: https://rubygems.pkg.github.com/goldbely
+    token: ${{secrets.DEPENDABOT_PACKAGES_READ}}
+    replaces-base: true
 updates:
   - package-ecosystem: 'bundler'
+    registries: '*'
     commit-message:
       prefix: 'chore(bundle): '
     directory: '/'
